@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Search Results – ZygoBus</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/search.css" />
+</head>
+<body>
+
+<nav class="navbar scrolled">
+  <div class="nav-container">
+    <a href="../index.html" class="nav-logo">
+      <div class="logo-icon"><i class="fas fa-bus"></i></div>
+      <span>Zygo<span class="logo-accent">Bus</span></span>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="search-results.html" class="active">Bus Search</a></li>
+      <li><a href="offers.html">Offers</a></li>
+      <li><a href="my-bookings.html">My Bookings</a></li>
+    </ul>
+    <div class="nav-actions" id="navActions">
+      <a href="login.html" class="btn-ghost" id="loginBtn">Login</a>
+      <a href="register.html" class="btn-primary-sm" id="signupBtn">Sign Up</a>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav>
+
+<!-- SEARCH BAR (Compact) -->
+<div class="search-bar-top">
+  <div class="container">
+    <div class="compact-search">
+      <div class="cs-field">
+        <label>From</label>
+        <input type="text" id="csFrom" placeholder="Source city" />
+      </div>
+      <button class="cs-swap" id="csSwap"><i class="fas fa-exchange-alt"></i></button>
+      <div class="cs-field">
+        <label>To</label>
+        <input type="text" id="csTo" placeholder="Destination city" />
+      </div>
+      <div class="cs-field cs-date">
+        <label>Date</label>
+        <input type="date" id="csDate" />
+      </div>
+      <button class="search-btn" id="csSearch"><i class="fas fa-search"></i> Search</button>
+    </div>
+    <!-- Date Navigator -->
+    <div class="date-nav" id="dateNav"></div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="results-layout">
+  <div class="container results-container">
+
+    <!-- FILTERS SIDEBAR -->
+    <aside class="filters-panel" id="filtersPanel">
+      <div class="filter-header">
+        <h3><i class="fas fa-sliders-h"></i> Filters</h3>
+        <button class="clear-filters" id="clearFilters">Clear All</button>
+      </div>
+
+      <div class="filter-group">
+        <h4>Departure Time</h4>
+        <div class="time-filters">
+          <button class="time-chip active" data-time="all">All</button>
+          <button class="time-chip" data-time="morning">🌅 Morning<br><small>6AM–12PM</small></button>
+          <button class="time-chip" data-time="afternoon">☀️ Afternoon<br><small>12PM–6PM</small></button>
+          <button class="time-chip" data-time="night">🌙 Night<br><small>6PM–6AM</small></button>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <h4>Bus Type</h4>
+        <div class="checkbox-group">
+          <label class="checkbox-item"><input type="checkbox" class="bus-type" value="AC Seater" checked/> AC Seater</label>
+          <label class="checkbox-item"><input type="checkbox" class="bus-type" value="AC Sleeper" checked/> AC Sleeper</label>
+          <label class="checkbox-item"><input type="checkbox" class="bus-type" value="Non-AC" checked/> Non-AC</label>
+          <label class="checkbox-item"><input type="checkbox" class="bus-type" value="Volvo" checked/> Volvo</label>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <h4>Price Range</h4>
+        <div class="price-range">
+          <input type="range" id="priceSlider" min="100" max="2000" value="2000" />
+          <div class="price-labels">
+            <span>₹100</span><span id="priceMax">₹2000</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <h4>Ratings</h4>
+        <div class="checkbox-group">
+          <label class="checkbox-item"><input type="checkbox" class="rating-filter" value="4"/> 4★ & above</label>
+          <label class="checkbox-item"><input type="checkbox" class="rating-filter" value="3"/> 3★ & above</label>
+        </div>
+      </div>
+    </aside>
+
+    <!-- BUS LISTINGS -->
+    <div class="results-main">
+      <div class="results-header">
+        <div class="results-title" id="resultsTitle">Loading buses...</div>
+        <div class="sort-control">
+          <label>Sort by:</label>
+          <select id="sortSelect">
+            <option value="price">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="departure">Departure: Earliest</option>
+            <option value="rating">Rating</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="busList"></div>
+
+      <!-- No Results -->
+      <div class="no-results" id="noResults" style="display:none">
+        <i class="fas fa-bus-slash"></i>
+        <h3>No buses found</h3>
+        <p>Try adjusting your filters or search for a different date.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SEAT SELECTION MODAL -->
+<div class="modal-overlay" id="seatModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2><i class="fas fa-chair"></i> Select Your Seat</h2>
+      <button class="modal-close" id="modalClose"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="seat-legend">
+        <div class="legend-item"><div class="seat-box available"></div> Available</div>
+        <div class="legend-item"><div class="seat-box selected-box"></div> Selected</div>
+        <div class="legend-item"><div class="seat-box booked"></div> Booked</div>
+        <div class="legend-item"><div class="seat-box ladies"></div> Ladies</div>
+      </div>
+      <div class="seat-layout" id="seatLayout"></div>
+      <div class="seat-summary" id="seatSummary">
+        <div>Selected: <strong id="selectedSeats">None</strong></div>
+        <div>Total: <strong id="totalFare">₹0</strong></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" id="modalCancelBtn">Cancel</button>
+      <button class="btn-book" id="proceedBook">Proceed to Book <i class="fas fa-arrow-right"></i></button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script>
+// Auth state for navbar
+(function() {
+  const user = JSON.parse(localStorage.getItem('zygobus_user') || 'null');
+  if (user) {
+    const loginBtn = document.getElementById('loginBtn');
+    const signupBtn = document.getElementById('signupBtn');
+    const navActions = document.getElementById('navActions');
+    if (loginBtn) loginBtn.style.display = 'none';
+    if (signupBtn) signupBtn.style.display = 'none';
+    const greeting = document.createElement('span');
+    greeting.style.cssText = 'color:#fff;font-weight:600;font-size:0.9rem;display:flex;align-items:center;gap:8px;';
+    greeting.innerHTML = `<i class="fas fa-user-circle" style="color:var(--primary);font-size:1.1rem;"></i>${user.firstName}`;
+    const logoutBtn = document.createElement('button');
+    logoutBtn.textContent = 'Logout';
+    logoutBtn.className = 'btn-ghost';
+    logoutBtn.style.cssText = 'cursor:pointer;border:none;background:none;';
+    logoutBtn.addEventListener('click', () => {
+      localStorage.removeItem('zygobus_token');
+      localStorage.removeItem('zygobus_user');
+      window.location.href = '../index.html';
+    });
+    const hamburger = document.querySelector('.hamburger');
+    navActions.insertBefore(logoutBtn, hamburger);
+    navActions.insertBefore(greeting, logoutBtn);
+  }
+})();
+</script>
+<script src="../js/search.js"></script>
+</body>
+</html>

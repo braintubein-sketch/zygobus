@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exclusive Offers – ZygoBus</title>
+  <meta name="description" content="Grab exclusive bus ticket offers and discount coupons on ZygoBus. Save big on every trip!" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .offers-page { min-height:100vh; padding:100px 0 60px; }
+    .offers-hero { text-align:center; margin-bottom:50px; }
+    .offers-hero h1 { font-family:'Outfit',sans-serif; font-size:clamp(2rem,5vw,3rem); font-weight:800; margin-bottom:12px; }
+    .offers-hero p { color:var(--text-muted); font-size:1rem; max-width:500px; margin:0 auto; }
+    .offers-filter { display:flex; gap:8px; justify-content:center; margin-bottom:40px; flex-wrap:wrap; }
+    .of-chip { padding:8px 20px; border-radius:100px; border:1px solid var(--border); background:transparent; color:var(--text-muted); font-weight:600; cursor:pointer; font-family:inherit; font-size:0.85rem; transition:var(--transition); }
+    .of-chip.active { background:var(--primary); color:#fff; border-color:var(--primary); }
+    .of-chip:hover:not(.active) { border-color:var(--primary); color:var(--primary); }
+    .offers-main { display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:24px; margin-bottom:60px; }
+    .of-card { border-radius:var(--radius); padding:0; overflow:hidden; transition:var(--transition); position:relative; }
+    .of-card:hover { transform:translateY(-6px); box-shadow:var(--shadow-lg); }
+    .of-top { padding:32px 28px 20px; position:relative; }
+    .of-tag { position:absolute; top:16px; right:16px; padding:4px 14px; border-radius:100px; font-size:0.7rem; font-weight:700; background:rgba(255,255,255,0.2); text-transform:uppercase; letter-spacing:0.5px; }
+    .of-emoji { font-size:2.8rem; margin-bottom:14px; display:block; }
+    .of-card h3 { font-family:'Outfit',sans-serif; font-size:1.4rem; font-weight:800; margin-bottom:8px; }
+    .of-card .of-desc { font-size:0.9rem; opacity:0.85; margin-bottom:6px; line-height:1.6; }
+    .of-validity { font-size:0.78rem; opacity:0.7; margin-bottom:16px; display:flex; align-items:center; gap:6px; }
+    .of-bottom { padding:18px 28px; background:rgba(0,0,0,0.15); display:flex; align-items:center; gap:14px; }
+    .of-code { flex:1; background:rgba(255,255,255,0.12); border:2px dashed rgba(255,255,255,0.35); padding:10px 16px; border-radius:8px; font-family:monospace; font-size:1.1rem; font-weight:700; letter-spacing:2px; text-align:center; }
+    .of-copy { background:rgba(255,255,255,0.2); border:none; padding:10px 20px; border-radius:8px; color:#fff; font-weight:600; cursor:pointer; font-family:inherit; transition:var(--transition); white-space:nowrap; font-size:0.85rem; }
+    .of-copy:hover { background:rgba(255,255,255,0.35); }
+    .of-copy.copied { background:rgba(16,185,129,0.4); }
+    .grad-blue { background:linear-gradient(135deg,#0f3460,#1a56db); color:#fff; }
+    .grad-orange { background:linear-gradient(135deg,#7c2d12,#f97316); color:#fff; }
+    .grad-green { background:linear-gradient(135deg,#064e3b,#10b981); color:#fff; }
+    .grad-purple { background:linear-gradient(135deg,#3b0764,#8b5cf6); color:#fff; }
+    .grad-cyan { background:linear-gradient(135deg,#083344,#06b6d4); color:#fff; }
+    .grad-red { background:linear-gradient(135deg,#7f1d1d,#ef4444); color:#fff; }
+    .bank-offers { margin-bottom:60px; }
+    .bank-offers h2 { font-family:'Outfit',sans-serif; font-size:1.6rem; font-weight:800; margin-bottom:24px; }
+    .bank-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:16px; }
+    .bank-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:24px; transition:var(--transition); }
+    .bank-card:hover { border-color:rgba(26,86,219,0.4); box-shadow:var(--shadow); }
+    .bank-card .bank-icon { font-size:2rem; margin-bottom:12px; }
+    .bank-card h4 { font-weight:700; margin-bottom:6px; }
+    .bank-card p { color:var(--text-muted); font-size:0.85rem; line-height:1.6; }
+    .terms-section { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:32px; }
+    .terms-section h3 { font-size:1.1rem; font-weight:700; margin-bottom:16px; display:flex; align-items:center; gap:10px; }
+    .terms-section h3 i { color:var(--primary); }
+    .terms-section ul { padding-left:20px; }
+    .terms-section ul li { color:var(--text-muted); font-size:0.88rem; margin-bottom:8px; line-height:1.6; }
+    @media(max-width:400px){ .offers-main{grid-template-columns:1fr;} }
+  </style>
+</head>
+<body>
+
+<nav class="navbar scrolled">
+  <div class="nav-container">
+    <a href="../index.html" class="nav-logo"><div class="logo-icon"><i class="fas fa-bus"></i></div><span>Zygo<span class="logo-accent">Bus</span></span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="search-results.html">Bus Search</a></li>
+      <li><a href="offers.html" class="active">Offers</a></li>
+      <li><a href="my-bookings.html">My Bookings</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="login.html" class="btn-ghost">Login</a>
+      <a href="register.html" class="btn-primary-sm">Sign Up</a>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav>
+
+<div class="offers-page">
+  <div class="container">
+    <div class="offers-hero">
+      <div class="section-badge">🔥 Hot Deals</div>
+      <h1>Exclusive <span class="gradient-text">Offers</span></h1>
+      <p>Save big on every trip with our latest coupons and discount codes</p>
+    </div>
+
+    <div class="offers-filter">
+      <button class="of-chip active" data-cat="all">All Offers</button>
+      <button class="of-chip" data-cat="new">New User</button>
+      <button class="of-chip" data-cat="weekend">Weekend</button>
+      <button class="of-chip" data-cat="student">Student</button>
+      <button class="of-chip" data-cat="bank">Bank Offers</button>
+    </div>
+
+    <div class="offers-main" id="offersGrid"></div>
+
+    <div class="bank-offers">
+      <h2>💳 Bank & Wallet Offers</h2>
+      <div class="bank-grid">
+        <div class="bank-card">
+          <div class="bank-icon">🏦</div>
+          <h4>HDFC Credit Card</h4>
+          <p>Get 10% instant discount up to ₹150 on HDFC credit card payments. Min booking ₹500.</p>
+        </div>
+        <div class="bank-card">
+          <div class="bank-icon">💰</div>
+          <h4>Paytm Wallet</h4>
+          <p>Flat ₹75 cashback when you pay via Paytm wallet. Valid on bookings above ₹400.</p>
+        </div>
+        <div class="bank-card">
+          <div class="bank-icon">🏧</div>
+          <h4>SBI Debit Card</h4>
+          <p>5% off up to ₹100 on SBI debit card payments. No minimum booking required.</p>
+        </div>
+        <div class="bank-card">
+          <div class="bank-icon">📱</div>
+          <h4>PhonePe UPI</h4>
+          <p>₹50 cashback on your first PhonePe UPI payment on ZygoBus. Min booking ₹300.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="terms-section">
+      <h3><i class="fas fa-info-circle"></i> Terms & Conditions</h3>
+      <ul>
+        <li>Offers are valid for a limited time and subject to availability.</li>
+        <li>Coupon codes can be applied during the booking process on the payment page.</li>
+        <li>Only one coupon code can be used per booking.</li>
+        <li>ZygoBus reserves the right to modify or withdraw offers without prior notice.</li>
+        <li>Cashback offers from bank partners are subject to respective bank T&C.</li>
+        <li>Student offers require valid student ID verification at the time of boarding.</li>
+        <li>Offers cannot be combined with other promotions unless explicitly stated.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const OFFERS = [
+  { code:'ZYGO200', title:'First Ride Offer', desc:'Get up to ₹200 off on your very first bus booking on ZygoBus!', emoji:'🎉', cat:'new', grad:'grad-blue', tag:'NEW USER', validity:'Valid till Dec 2026' },
+  { code:'WKND15', title:'Weekend Getaway', desc:'Flat 15% off on all weekend travel. Book Sat & Sun departures and save!', emoji:'🌅', cat:'weekend', grad:'grad-orange', tag:'WEEKEND', validity:'Every Sat & Sun' },
+  { code:'STUDENT20', title:'Student Special', desc:'Students get 20% off with valid ID on all routes. Study hard, travel smart!', emoji:'🎓', cat:'student', grad:'grad-green', tag:'STUDENT', validity:'Valid with Student ID' },
+  { code:'NIGHT50', title:'Night Owl Deal', desc:'₹50 off on all night departures (8PM – 6AM). Perfect for overnight journeys.', emoji:'🌙', cat:'all', grad:'grad-purple', tag:'NIGHT', validity:'8PM-6AM departures only' },
+  { code:'SUMMER25', title:'Summer Bonanza', desc:'Flat 25% off up to ₹300 on all bookings this summer. Beat the heat, travel cool!', emoji:'☀️', cat:'all', grad:'grad-cyan', tag:'SEASONAL', validity:'Till June 2026' },
+  { code:'REFER100', title:'Refer & Earn', desc:'Get ₹100 off for both you and your friend when they sign up with your referral code.', emoji:'🤝', cat:'new', grad:'grad-red', tag:'REFERRAL', validity:'Unlimited referrals' },
+];
+
+function renderOffers(cat) {
+  const grid = document.getElementById('offersGrid');
+  const filtered = cat === 'all' ? OFFERS : OFFERS.filter(o => o.cat === cat);
+  grid.innerHTML = filtered.map(o => `
+    <div class="of-card ${o.grad}">
+      <div class="of-top">
+        <div class="of-tag">${o.tag}</div>
+        <span class="of-emoji">${o.emoji}</span>
+        <h3>${o.title}</h3>
+        <p class="of-desc">${o.desc}</p>
+        <div class="of-validity"><i class="fas fa-clock"></i> ${o.validity}</div>
+      </div>
+      <div class="of-bottom">
+        <div class="of-code">${o.code}</div>
+        <button class="of-copy" onclick="copyOffer('${o.code}', this)">
+          <i class="fas fa-copy"></i> Copy
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function copyOffer(code, btn) {
+  navigator.clipboard.writeText(code).then(() => {
+    btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+    btn.classList.add('copied');
+    showToast(`✅ Code "${code}" copied to clipboard!`);
+    setTimeout(() => { btn.innerHTML = '<i class="fas fa-copy"></i> Copy'; btn.classList.remove('copied'); }, 2000);
+  }).catch(() => showToast(`Code: ${code}`, 'success'));
+}
+
+document.querySelectorAll('.of-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.of-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    renderOffers(chip.dataset.cat);
+  });
+});
+
+// Hamburger
+document.getElementById('hamburger')?.addEventListener('click', () => {
+  document.getElementById('navLinks').classList.toggle('open');
+});
+
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = `toast show ${type}`;
+  setTimeout(() => t.className = 'toast', 3000);
+}
+
+renderOffers('all');
+</script>
+</body>
+</html>

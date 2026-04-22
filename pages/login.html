@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login – ZygoBus</title>
+  <meta name="description" content="Login to your ZygoBus account to manage bookings, track buses, and access exclusive offers." />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/auth.css" />
+</head>
+<body>
+
+<nav class="navbar scrolled">
+  <div class="nav-container">
+    <a href="../index.html" class="nav-logo">
+      <div class="logo-icon"><i class="fas fa-bus"></i></div>
+      <span>Zygo<span class="logo-accent">Bus</span></span>
+    </a>
+    <div class="nav-actions">
+      <a href="register.html" class="btn-primary-sm">Sign Up</a>
+    </div>
+  </div>
+</nav>
+
+<div class="auth-page">
+  <div class="auth-container">
+    <div class="auth-header">
+      <a href="../index.html" class="auth-logo">
+        <div class="logo-icon"><i class="fas fa-bus"></i></div>
+        <span>Zygo<span class="logo-accent">Bus</span></span>
+      </a>
+      <h1>Welcome Back</h1>
+      <p>Login to manage your bookings and track your trips</p>
+    </div>
+
+    <div class="auth-card">
+      <div class="auth-error" id="authError">
+        <i class="fas fa-exclamation-circle"></i>
+        <span id="errorMsg"></span>
+      </div>
+
+      <form class="auth-form" id="loginForm" onsubmit="return false;">
+        <div class="auth-field">
+          <label>Email Address</label>
+          <div class="input-wrapper">
+            <input type="email" id="loginEmail" placeholder="you@example.com" required />
+            <i class="fas fa-envelope"></i>
+          </div>
+        </div>
+
+        <div class="auth-field">
+          <label>Password</label>
+          <div class="input-wrapper">
+            <input type="password" id="loginPassword" placeholder="Enter your password" required />
+            <i class="fas fa-lock"></i>
+            <button type="button" class="toggle-password" onclick="togglePass('loginPassword', this)">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="auth-options">
+          <label><input type="checkbox" checked /> Remember me</label>
+          <a href="#">Forgot Password?</a>
+        </div>
+
+        <button type="submit" class="auth-btn" id="loginBtn">
+          <i class="fas fa-sign-in-alt"></i> Login
+        </button>
+
+        <div class="auth-divider">or continue with</div>
+
+        <div class="social-auth">
+          <button type="button" class="social-btn google">
+            <i class="fab fa-google"></i> Google
+          </button>
+          <button type="button" class="social-btn facebook">
+            <i class="fab fa-facebook-f"></i> Facebook
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="auth-footer">
+      Don't have an account? <a href="register.html">Sign Up Free</a>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? 'http://localhost:3001/api' : '/api';
+
+function togglePass(inputId, btn) {
+  const input = document.getElementById(inputId);
+  const icon = btn.querySelector('i');
+  if (input.type === 'password') {
+    input.type = 'text';
+    icon.classList.replace('fa-eye', 'fa-eye-slash');
+  } else {
+    input.type = 'password';
+    icon.classList.replace('fa-eye-slash', 'fa-eye');
+  }
+}
+
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast show ${type}`;
+  setTimeout(() => t.className = 'toast', 3000);
+}
+
+function showError(msg) {
+  const el = document.getElementById('authError');
+  document.getElementById('errorMsg').textContent = msg;
+  el.classList.add('show');
+}
+
+document.getElementById('loginForm').addEventListener('submit', async () => {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+
+  if (!email || !password) { showError('Please fill all fields'); return; }
+
+  const btn = document.getElementById('loginBtn');
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(`${API}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Login failed');
+
+    localStorage.setItem('zygobus_token', data.token);
+    localStorage.setItem('zygobus_user', JSON.stringify(data.user));
+    showToast('✅ Login successful!');
+    setTimeout(() => window.location.href = '../index.html', 800);
+  } catch (err) {
+    showError(err.message);
+    btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+    btn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>

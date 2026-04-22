@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Help Center – ZygoBus</title>
+  <meta name="description" content="Get help with your ZygoBus bookings. FAQ, contact support, and troubleshooting guides." />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .help-page { min-height:100vh; padding:100px 0 60px; }
+    .help-hero { text-align:center; margin-bottom:50px; }
+    .help-hero h1 { font-family:'Outfit',sans-serif; font-size:clamp(2rem,5vw,3rem); font-weight:800; margin-bottom:12px; }
+    .help-hero p { color:var(--text-muted); max-width:500px; margin:0 auto 28px; }
+    .help-search { max-width:500px; margin:0 auto; position:relative; }
+    .help-search input { width:100%; background:var(--card); border:1px solid var(--border); border-radius:100px; padding:16px 20px 16px 50px; color:#fff; font-size:1rem; font-family:inherit; outline:none; transition:var(--transition); }
+    .help-search input:focus { border-color:var(--primary); }
+    .help-search input::placeholder { color:var(--text-muted); }
+    .help-search i { position:absolute; left:20px; top:50%; transform:translateY(-50%); color:var(--text-muted); }
+    .help-categories { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:16px; margin-bottom:50px; }
+    .help-cat { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:24px; text-align:center; cursor:pointer; transition:var(--transition); }
+    .help-cat:hover { border-color:var(--primary); transform:translateY(-4px); box-shadow:var(--shadow); }
+    .help-cat.active { border-color:var(--primary); background:rgba(26,86,219,0.1); }
+    .help-cat i { font-size:1.8rem; margin-bottom:12px; display:block; }
+    .help-cat.blue i { color:#60a5fa; }
+    .help-cat.green i { color:var(--success); }
+    .help-cat.orange i { color:var(--orange); }
+    .help-cat.purple i { color:var(--purple); }
+    .help-cat.cyan i { color:var(--cyan); }
+    .help-cat.red i { color:var(--danger); }
+    .help-cat h4 { font-size:0.9rem; font-weight:700; }
+    .faq-section { margin-bottom:50px; }
+    .faq-section h2 { font-family:'Outfit',sans-serif; font-size:1.6rem; font-weight:800; margin-bottom:24px; }
+    .faq-item { background:var(--card); border:1px solid var(--border); border-radius:var(--radius-sm); margin-bottom:10px; overflow:hidden; transition:var(--transition); }
+    .faq-item:hover { border-color:rgba(26,86,219,0.3); }
+    .faq-q { display:flex; align-items:center; justify-content:space-between; padding:18px 24px; cursor:pointer; font-weight:600; font-size:0.95rem; gap:16px; transition:var(--transition); }
+    .faq-q:hover { color:var(--primary); }
+    .faq-q i { color:var(--primary); transition:transform 0.3s ease; font-size:0.8rem; flex-shrink:0; }
+    .faq-item.open .faq-q i { transform:rotate(180deg); }
+    .faq-a { padding:0 24px; max-height:0; overflow:hidden; transition:max-height 0.3s ease, padding 0.3s ease; }
+    .faq-item.open .faq-a { padding:0 24px 20px; max-height:300px; }
+    .faq-a p { color:var(--text-muted); font-size:0.9rem; line-height:1.8; }
+    .contact-section { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:24px; margin-bottom:50px; }
+    .contact-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:32px; text-align:center; transition:var(--transition); }
+    .contact-card:hover { border-color:var(--primary); box-shadow:var(--shadow); }
+    .contact-card .cc-icon { width:64px; height:64px; border-radius:18px; display:flex; align-items:center; justify-content:center; font-size:1.5rem; margin:0 auto 16px; }
+    .contact-card .cc-icon.blue { background:rgba(26,86,219,0.15); color:#60a5fa; }
+    .contact-card .cc-icon.green { background:rgba(16,185,129,0.15); color:var(--success); }
+    .contact-card .cc-icon.orange { background:rgba(249,115,22,0.15); color:var(--orange); }
+    .contact-card h3 { font-size:1.1rem; font-weight:700; margin-bottom:8px; }
+    .contact-card p { color:var(--text-muted); font-size:0.9rem; margin-bottom:16px; line-height:1.6; }
+    .contact-card a { display:inline-flex; align-items:center; gap:8px; color:var(--primary); font-weight:600; font-size:0.9rem; transition:var(--transition); }
+    .contact-card a:hover { text-decoration:underline; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar scrolled">
+  <div class="nav-container">
+    <a href="../index.html" class="nav-logo"><div class="logo-icon"><i class="fas fa-bus"></i></div><span>Zygo<span class="logo-accent">Bus</span></span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="search-results.html">Bus Search</a></li>
+      <li><a href="offers.html">Offers</a></li>
+      <li><a href="my-bookings.html">My Bookings</a></li>
+      <li><a href="help.html" class="active">Help</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="login.html" class="btn-ghost">Login</a>
+      <a href="register.html" class="btn-primary-sm">Sign Up</a>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav>
+
+<div class="help-page">
+  <div class="container">
+    <div class="help-hero">
+      <div class="section-badge">Support</div>
+      <h1>How can we <span class="gradient-text">help you?</span></h1>
+      <p>Find answers to common questions or reach out to our 24/7 support team</p>
+      <div class="help-search">
+        <i class="fas fa-search"></i>
+        <input type="text" id="faqSearch" placeholder="Search for help topics..." />
+      </div>
+    </div>
+
+    <div class="help-categories">
+      <div class="help-cat blue" onclick="scrollToFaq()"><i class="fas fa-ticket-alt"></i><h4>Booking</h4></div>
+      <div class="help-cat green" onclick="scrollToFaq()"><i class="fas fa-undo"></i><h4>Cancellation</h4></div>
+      <div class="help-cat orange" onclick="scrollToFaq()"><i class="fas fa-credit-card"></i><h4>Payment</h4></div>
+      <div class="help-cat purple" onclick="scrollToFaq()"><i class="fas fa-map-marker-alt"></i><h4>Tracking</h4></div>
+      <div class="help-cat cyan" onclick="scrollToFaq()"><i class="fas fa-user-shield"></i><h4>Account</h4></div>
+      <div class="help-cat red" onclick="scrollToFaq()"><i class="fas fa-exclamation-triangle"></i><h4>Issues</h4></div>
+    </div>
+
+    <div class="faq-section" id="faqSection">
+      <h2>📋 Frequently Asked Questions</h2>
+      <div id="faqList"></div>
+    </div>
+
+    <h2 style="font-family:'Outfit',sans-serif;font-size:1.6rem;font-weight:800;margin-bottom:24px;">📞 Contact Us</h2>
+    <div class="contact-section">
+      <div class="contact-card">
+        <div class="cc-icon blue"><i class="fas fa-headset"></i></div>
+        <h3>24/7 Phone Support</h3>
+        <p>Call us anytime, day or night. Our support team is always ready to help you.</p>
+        <a href="tel:1800123456"><i class="fas fa-phone"></i> 1800-ZYG-BUS (Toll Free)</a>
+      </div>
+      <div class="contact-card">
+        <div class="cc-icon green"><i class="fas fa-envelope"></i></div>
+        <h3>Email Support</h3>
+        <p>Send us a detailed email and we'll get back to you within 2 hours.</p>
+        <a href="mailto:support@zygobus.com"><i class="fas fa-envelope"></i> support@zygobus.com</a>
+      </div>
+      <div class="contact-card">
+        <div class="cc-icon orange"><i class="fab fa-whatsapp"></i></div>
+        <h3>WhatsApp Chat</h3>
+        <p>Quick support via WhatsApp. Share your booking details and get instant help.</p>
+        <a href="#"><i class="fab fa-whatsapp"></i> +91 98765 43210</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const FAQS = [
+  { q:'How do I book a bus ticket on ZygoBus?', a:'Search for your route on the homepage by entering source city, destination city, and travel date. Browse available buses, select your preferred one, choose seats, fill in passenger details, and complete the payment. You\'ll receive a booking confirmation via email and SMS.' },
+  { q:'Can I cancel my bus ticket? What is the refund policy?', a:'Yes, you can cancel your booking from the "My Bookings" page. Refund depends on the cancellation policy of the bus operator. Generally, cancellations made 24+ hours before departure get 75-90% refund. Cancellations within 24 hours may get 50% or no refund. Refunds are processed within 3-5 business days.' },
+  { q:'How can I track my bus in real-time?', a:'Once your bus departs, you can track it from the "My Bookings" page. Click on the active booking to see live GPS tracking on the map. You\'ll also receive SMS updates about your bus location.' },
+  { q:'What payment methods are accepted?', a:'We accept all major payment methods: Credit/Debit cards (Visa, Mastercard, RuPay), UPI (GPay, PhonePe, Paytm), Net Banking (all major banks), and popular wallets. All payments are 100% secure with SSL encryption.' },
+  { q:'I didn\'t receive my booking confirmation. What should I do?', a:'Check your spam/junk folder first. If you still can\'t find it, login to your ZygoBus account and check "My Bookings". You can also contact our 24/7 support team with your registered email or phone number for assistance.' },
+  { q:'Can I change my travel date after booking?', a:'Date changes depend on the operator\'s policy. Most operators allow date changes up to 24 hours before departure for a small fee. Contact our support team to check availability and process the change.' },
+  { q:'How do I apply a coupon code?', a:'During the booking process, on the payment page you\'ll see a "Have a coupon?" field. Enter your coupon code and click "Apply". The discount will be reflected in your fare summary before you make the payment.' },
+  { q:'Is it safe to book on ZygoBus?', a:'Absolutely! ZygoBus uses 256-bit SSL encryption for all transactions. We are PCI-DSS compliant and your payment information is never stored on our servers. We partner with trusted payment gateways like Razorpay for secure processing.' },
+  { q:'What if my bus is delayed or cancelled by the operator?', a:'If a bus is delayed, you\'ll be notified via SMS and app notification. If cancelled by the operator, you\'ll receive a full refund automatically within 24 hours. Our support team will also help you find alternative buses.' },
+  { q:'How do I contact customer support?', a:'You can reach us 24/7 via: Phone (1800-ZYG-BUS toll-free), Email (support@zygobus.com), WhatsApp (+91 98765 43210), or the in-app chat feature. Average response time is under 2 minutes.' },
+];
+
+function renderFAQs(filter = '') {
+  const list = document.getElementById('faqList');
+  const filtered = filter
+    ? FAQS.filter(f => f.q.toLowerCase().includes(filter) || f.a.toLowerCase().includes(filter))
+    : FAQS;
+
+  list.innerHTML = filtered.map((f, i) => `
+    <div class="faq-item" id="faq-${i}">
+      <div class="faq-q" onclick="toggleFaq(${i})">
+        <span>${f.q}</span>
+        <i class="fas fa-chevron-down"></i>
+      </div>
+      <div class="faq-a"><p>${f.a}</p></div>
+    </div>
+  `).join('');
+
+  if (!filtered.length) {
+    list.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:40px;">No results found. Try a different search term.</p>';
+  }
+}
+
+function toggleFaq(i) {
+  const el = document.getElementById(`faq-${i}`);
+  el.classList.toggle('open');
+}
+
+function scrollToFaq() {
+  document.getElementById('faqSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// Search
+document.getElementById('faqSearch').addEventListener('input', (e) => {
+  renderFAQs(e.target.value.toLowerCase().trim());
+});
+
+// Hamburger
+document.getElementById('hamburger')?.addEventListener('click', () => {
+  document.getElementById('navLinks').classList.toggle('open');
+});
+
+renderFAQs();
+</script>
+</body>
+</html>

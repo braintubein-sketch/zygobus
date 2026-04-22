@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZygoBus – Book Bus Tickets Online | Fast, Easy & Reliable</title>
+  <meta name="description" content="Book bus tickets online with ZygoBus. Compare prices, choose your seat, and travel comfortably across India. Best fares guaranteed." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- ========== NAVBAR ========== -->
+<nav class="navbar" id="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="nav-logo">
+      <div class="logo-icon"><i class="fas fa-bus"></i></div>
+      <span>Zygo<span class="logo-accent">Bus</span></span>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#home">Home</a></li>
+      <li><a href="pages/search-results.html">Bus Search</a></li>
+      <li><a href="pages/offers.html">Offers</a></li>
+      <li><a href="pages/my-bookings.html">My Bookings</a></li>
+      <li><a href="pages/help.html">Help</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="pages/login.html" class="btn-ghost" id="loginBtn">Login</a>
+      <a href="pages/register.html" class="btn-primary-sm">Sign Up</a>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ========== HERO ========== -->
+<section class="hero" id="home">
+  <div class="hero-bg">
+    <div class="hero-overlay"></div>
+    <img src="assets/images/hero-banner.png" alt="ZygoBus travel" class="hero-img" />
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge"><i class="fas fa-bolt"></i> India's Fastest Bus Booking</div>
+    <h1 class="hero-title">Travel Smart,<br /><span class="gradient-text">Book Smarter</span></h1>
+    <p class="hero-subtitle">10,000+ routes · 500+ operators · Best fares guaranteed</p>
+
+    <!-- Search Box -->
+    <div class="search-box" id="searchBox">
+      <div class="search-tabs">
+        <button class="tab-btn active" data-tab="oneway">One Way</button>
+        <button class="tab-btn" data-tab="roundtrip">Round Trip</button>
+      </div>
+      <div class="search-form">
+        <div class="search-field" id="fromField">
+          <label><i class="fas fa-map-marker-alt"></i> From</label>
+          <input type="text" id="fromCity" placeholder="Enter source city" autocomplete="off" />
+          <div class="suggestions" id="fromSuggestions"></div>
+        </div>
+        <button class="swap-btn" id="swapBtn" aria-label="Swap cities">
+          <i class="fas fa-exchange-alt"></i>
+        </button>
+        <div class="search-field" id="toField">
+          <label><i class="fas fa-map-marker-alt"></i> To</label>
+          <input type="text" id="toCity" placeholder="Enter destination city" autocomplete="off" />
+          <div class="suggestions" id="toSuggestions"></div>
+        </div>
+        <div class="search-field">
+          <label><i class="fas fa-calendar-alt"></i> Date</label>
+          <input type="date" id="travelDate" />
+        </div>
+        <button class="search-btn" id="searchBtn">
+          <i class="fas fa-search"></i> Search Buses
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="hero-scroll"><i class="fas fa-chevron-down"></i></div>
+</section>
+
+<!-- ========== STATS ========== -->
+<section class="stats-section">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-num" data-target="25000000">0</div><div class="stat-label">Happy Travelers</div></div>
+      <div class="stat-card"><div class="stat-num" data-target="10000">0</div><div class="stat-label">Routes Available</div></div>
+      <div class="stat-card"><div class="stat-num" data-target="500">0</div><div class="stat-label">Bus Operators</div></div>
+      <div class="stat-card"><div class="stat-num" data-target="98">0</div><div class="stat-label">% On-Time Rate</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== POPULAR ROUTES ========== -->
+<section class="section popular-routes">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-badge">Most Booked</div>
+      <h2 class="section-title">Popular Routes</h2>
+      <p class="section-sub">Explore the most travelled bus routes across India</p>
+    </div>
+    <div class="routes-grid" id="routesGrid"></div>
+  </div>
+</section>
+
+<!-- ========== WHY ZYGOBUS ========== -->
+<section class="section features-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-badge">Why Us</div>
+      <h2 class="section-title">Why Choose ZygoBus?</h2>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon blue"><i class="fas fa-shield-alt"></i></div>
+        <h3>100% Safe Booking</h3>
+        <p>Secure payment gateway with end-to-end encryption. Your data is always protected.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon green"><i class="fas fa-tag"></i></div>
+        <h3>Best Price Guarantee</h3>
+        <p>We compare 500+ operators to ensure you always get the lowest fare available.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon orange"><i class="fas fa-couch"></i></div>
+        <h3>Choose Your Seat</h3>
+        <p>Interactive seat selection — window, aisle or lower berth, the choice is yours.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon purple"><i class="fas fa-headset"></i></div>
+        <h3>24/7 Support</h3>
+        <p>Our support team is available round the clock via chat, call or email.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon cyan"><i class="fas fa-undo"></i></div>
+        <h3>Easy Cancellation</h3>
+        <p>Hassle-free cancellations with instant refunds to your original payment method.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon red"><i class="fas fa-map-marked-alt"></i></div>
+        <h3>Live Bus Tracking</h3>
+        <p>Track your bus in real-time on the map. Know exactly where your bus is.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== OFFERS ========== -->
+<section class="section offers-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-badge">Deals</div>
+      <h2 class="section-title">Exclusive Offers</h2>
+    </div>
+    <div class="offers-grid">
+      <div class="offer-card gradient-blue">
+        <div class="offer-badge">LIMITED</div>
+        <div class="offer-icon"><i class="fas fa-percentage"></i></div>
+        <h3>First Ride Free</h3>
+        <p>Get up to ₹200 off on your first bus booking</p>
+        <div class="offer-code">ZYGO200</div>
+        <button class="copy-code" onclick="copyCode('ZYGO200')">Copy Code <i class="fas fa-copy"></i></button>
+      </div>
+      <div class="offer-card gradient-orange">
+        <div class="offer-badge">WEEKEND</div>
+        <div class="offer-icon"><i class="fas fa-sun"></i></div>
+        <h3>Weekend Special</h3>
+        <p>Flat 15% off on weekend travel every Saturday & Sunday</p>
+        <div class="offer-code">WKND15</div>
+        <button class="copy-code" onclick="copyCode('WKND15')">Copy Code <i class="fas fa-copy"></i></button>
+      </div>
+      <div class="offer-card gradient-green">
+        <div class="offer-badge">STUDENT</div>
+        <div class="offer-icon"><i class="fas fa-graduation-cap"></i></div>
+        <h3>Student Discount</h3>
+        <p>Students get 20% off with a valid ID on all routes</p>
+        <div class="offer-code">STUDENT20</div>
+        <button class="copy-code" onclick="copyCode('STUDENT20')">Copy Code <i class="fas fa-copy"></i></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== TESTIMONIALS ========== -->
+<section class="section testimonials-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-badge">Reviews</div>
+      <h2 class="section-title">What Travelers Say</h2>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p>"ZygoBus made my Bangalore to Hyderabad trip so smooth. Seat selection was easy and the bus was on time!"</p>
+        <div class="reviewer"><div class="avatar">R</div><div><strong>Rahul M.</strong><span>Bangalore</span></div></div>
+      </div>
+      <div class="testimonial-card featured">
+        <div class="stars">★★★★★</div>
+        <p>"Best bus booking app I've used. The offers are amazing and cancellation was instant refund. Highly recommend!"</p>
+        <div class="reviewer"><div class="avatar">P</div><div><strong>Priya S.</strong><span>Mumbai</span></div></div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p>"Live tracking feature is a game changer. I knew exactly when my bus would arrive. Great experience overall."</p>
+        <div class="reviewer"><div class="avatar">A</div><div><strong>Arjun K.</strong><span>Chennai</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== APP DOWNLOAD ========== -->
+<section class="app-section">
+  <div class="container">
+    <div class="app-content">
+      <div class="app-text">
+        <h2>Book on the Go!</h2>
+        <p>Download the ZygoBus app for faster booking, exclusive app-only offers, and real-time bus tracking.</p>
+        <div class="app-badges">
+          <a href="#" class="app-badge"><i class="fab fa-google-play"></i><div><span>Get it on</span><strong>Google Play</strong></div></a>
+          <a href="#" class="app-badge"><i class="fab fa-apple"></i><div><span>Download on</span><strong>App Store</strong></div></a>
+        </div>
+      </div>
+      <div class="app-phones">
+        <div class="phone-mockup">
+          <div class="phone-screen">
+            <div class="phone-ui">
+              <div class="pui-header">ZygoBus</div>
+              <div class="pui-search">🔍 Search buses...</div>
+              <div class="pui-card blue-card">BLR → HYD <span>₹450</span></div>
+              <div class="pui-card orange-card">MUM → PNE <span>₹280</span></div>
+              <div class="pui-card green-card">DEL → AGR <span>₹320</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo"><i class="fas fa-bus"></i> Zygo<span>Bus</span></div>
+        <p>India's most trusted bus booking platform. Travel comfortably, travel smart.</p>
+        <div class="social-links">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press</a></li>
+          <li><a href="#">Blog</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Cancellation Policy</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><i class="fas fa-phone"></i> 1800-ZYG-BUS</li>
+          <li><i class="fas fa-envelope"></i> support@zygobus.com</li>
+          <li><i class="fas fa-clock"></i> 24/7 Available</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 ZygoBus. All rights reserved. Made with ❤️ in India.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- Toast notification -->
+<div class="toast" id="toast"></div>
+
+<script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+# Dependencies
+server/node_modules/
+node_modules/
+
+# Database files (runtime data)
+server/*.db
+server/*.db-shm
+server/*.db-wal
+
+# Environment files
+.env
+.env.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor
+.vscode/
+.idea/
+*.swp

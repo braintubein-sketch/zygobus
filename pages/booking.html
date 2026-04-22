@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Booking Confirmation – ZygoBus</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .booking-page { min-height: 100vh; padding: 100px 0 60px; }
+    .booking-grid { display: grid; grid-template-columns: 1fr 380px; gap: 24px; align-items: start; }
+    .booking-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .booking-section { padding: 24px; border-bottom: 1px solid var(--border); }
+    .booking-section:last-child { border-bottom: none; }
+    .booking-section h3 { font-size: 1rem; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+    .booking-section h3 i { color: var(--primary); }
+    .journey-info { display: flex; align-items: center; gap: 20px; margin-bottom: 16px; }
+    .journey-city { font-family: 'Outfit', sans-serif; font-size: 1.8rem; font-weight: 800; }
+    .journey-arrow { color: var(--primary); font-size: 1.5rem; }
+    .info-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9rem; }
+    .info-row span:first-child { color: var(--text-muted); }
+    .info-row span:last-child { font-weight: 600; }
+    .passenger-form { display: flex; flex-direction: column; gap: 16px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .form-group input, .form-group select {
+      background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 12px 16px; color: #fff;
+      font-size: 0.9rem; outline: none; transition: var(--transition); font-family: inherit;
+    }
+    .form-group input:focus, .form-group select:focus { border-color: var(--primary); background: rgba(26,86,219,0.08); }
+    .form-group select option { background: var(--card2); }
+    /* Fare Summary */
+    .fare-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; position: sticky; top: 90px; }
+    .fare-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 20px; }
+    .fare-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.9rem; }
+    .fare-row span:first-child { color: var(--text-muted); }
+    .fare-divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+    .fare-total { display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: 800; }
+    .fare-total span:last-child { color: var(--accent); }
+    .coupon-row { display: flex; gap: 10px; margin: 16px 0; }
+    .coupon-row input {
+      flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 10px 14px; color: #fff;
+      font-size: 0.85rem; outline: none; font-family: inherit;
+    }
+    .coupon-row button {
+      background: var(--primary); border: none; border-radius: var(--radius-sm);
+      padding: 10px 18px; color: #fff; font-weight: 600; cursor: pointer;
+      font-family: inherit; transition: var(--transition);
+    }
+    .coupon-row button:hover { background: var(--primary-dark); }
+    .pay-btn {
+      width: 100%; background: linear-gradient(135deg, var(--primary), #3b82f6);
+      border: none; border-radius: var(--radius-sm); padding: 14px;
+      color: #fff; font-weight: 700; font-size: 1rem; cursor: pointer;
+      transition: var(--transition); display: flex; align-items: center;
+      justify-content: center; gap: 10px; font-family: inherit; margin-top: 16px;
+    }
+    .pay-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,86,219,0.4); }
+    .secure-note { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; color: var(--text-muted); margin-top: 12px; justify-content: center; }
+    .secure-note i { color: var(--success); }
+    /* Success Modal */
+    .success-modal { display:none; position:fixed; inset:0; z-index:3000; background:rgba(0,0,0,0.8); backdrop-filter:blur(8px); align-items:center; justify-content:center; }
+    .success-modal.open { display:flex; }
+    .success-box { background:var(--card2); border:1px solid var(--border); border-radius:var(--radius); padding:48px; text-align:center; max-width:440px; animation:fadeInUp 0.4s ease; }
+    .success-icon { width:80px; height:80px; border-radius:50%; background:rgba(16,185,129,0.15); border:2px solid var(--success); display:flex; align-items:center; justify-content:center; font-size:2rem; color:var(--success); margin:0 auto 24px; }
+    .success-box h2 { font-family:'Outfit',sans-serif; font-size:1.8rem; font-weight:800; margin-bottom:10px; }
+    .success-box p { color:var(--text-muted); margin-bottom:24px; line-height:1.7; }
+    .booking-ref { background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); border-radius:var(--radius-sm); padding:16px; margin-bottom:24px; }
+    .booking-ref span { font-size:0.8rem; color:var(--text-muted); display:block; margin-bottom:4px; }
+    .booking-ref strong { font-family:monospace; font-size:1.3rem; letter-spacing:2px; color:var(--success); }
+    .success-btn { background:var(--primary); border:none; border-radius:var(--radius-sm); padding:12px 28px; color:#fff; font-weight:700; cursor:pointer; font-family:inherit; font-size:0.95rem; transition:var(--transition); }
+    .success-btn:hover { background:var(--primary-dark); }
+    @media(max-width:860px){ .booking-grid{grid-template-columns:1fr;} .fare-card{position:static;} }
+    @media(max-width:580px){ .form-row{grid-template-columns:1fr;} }
+  </style>
+</head>
+<body>
+<nav class="navbar scrolled">
+  <div class="nav-container">
+    <a href="../index.html" class="nav-logo">
+      <div class="logo-icon"><i class="fas fa-bus"></i></div>
+      <span>Zygo<span class="logo-accent">Bus</span></span>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="search-results.html">Bus Search</a></li>
+      <li><a href="offers.html">Offers</a></li>
+      <li><a href="my-bookings.html">My Bookings</a></li>
+    </ul>
+    <div class="nav-actions" id="navActions">
+      <a href="login.html" class="btn-ghost" id="loginBtn">Login</a>
+      <a href="register.html" class="btn-primary-sm" id="signupBtn">Sign Up</a>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav>
+
+<div class="booking-page">
+  <div class="container">
+    <!-- Progress -->
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:32px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:8px;font-size:0.85rem;"><span style="width:26px;height:26px;border-radius:50%;background:var(--success);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.75rem;">✓</span><span style="color:var(--text-muted);">Search</span></div>
+      <div style="flex:1;height:2px;background:var(--success);border-radius:2px;max-width:60px;"></div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:0.85rem;"><span style="width:26px;height:26px;border-radius:50%;background:var(--success);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.75rem;">✓</span><span style="color:var(--text-muted);">Select Seat</span></div>
+      <div style="flex:1;height:2px;background:var(--primary);border-radius:2px;max-width:60px;"></div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:0.85rem;"><span style="width:26px;height:26px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.75rem;">3</span><strong>Book & Pay</strong></div>
+    </div>
+
+    <div class="booking-grid">
+      <div>
+        <!-- Journey Info -->
+        <div class="booking-card" style="margin-bottom:20px;">
+          <div class="booking-section">
+            <h3><i class="fas fa-route"></i> Journey Details</h3>
+            <div class="journey-info">
+              <div class="journey-city" id="bkFrom"></div>
+              <div class="journey-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
+              <div class="journey-city" id="bkTo"></div>
+            </div>
+            <div class="info-row"><span>Date</span><span id="bkDate"></span></div>
+            <div class="info-row"><span>Operator</span><span id="bkOperator"></span></div>
+            <div class="info-row"><span>Bus Type</span><span id="bkBusType"></span></div>
+            <div class="info-row"><span>Departure</span><span id="bkDep"></span></div>
+            <div class="info-row"><span>Arrival</span><span id="bkArr"></span></div>
+            <div class="info-row"><span>Duration</span><span id="bkDuration"></span></div>
+            <div class="info-row"><span>Seats</span><span id="bkSeats"></span></div>
+          </div>
+        </div>
+
+        <!-- Passenger Details -->
+        <div class="booking-card">
+          <div class="booking-section">
+            <h3><i class="fas fa-user"></i> Passenger Details</h3>
+            <div class="passenger-form">
+              <div class="form-row">
+                <div class="form-group"><label>First Name</label><input type="text" id="firstName" placeholder="Rahul" /></div>
+                <div class="form-group"><label>Last Name</label><input type="text" id="lastName" placeholder="Sharma" /></div>
+              </div>
+              <div class="form-row">
+                <div class="form-group"><label>Mobile</label><input type="tel" id="mobile" placeholder="9876543210" /></div>
+                <div class="form-group"><label>Email</label><input type="email" id="email" placeholder="rahul@email.com" /></div>
+              </div>
+              <div class="form-row">
+                <div class="form-group"><label>Age</label><input type="number" id="age" placeholder="25" min="1" max="99" /></div>
+                <div class="form-group"><label>Gender</label>
+                  <select id="gender"><option value="">Select</option><option>Male</option><option>Female</option><option>Other</option></select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fare Summary -->
+      <div class="fare-card">
+        <h3><i class="fas fa-receipt" style="color:var(--primary);margin-right:8px;"></i>Fare Summary</h3>
+        <div class="fare-row"><span>Base Fare</span><span id="fareBase">₹0</span></div>
+        <div class="fare-row"><span>Service Fee</span><span>₹49</span></div>
+        <div class="fare-row" id="discountRow" style="display:none;color:var(--success);"><span>Discount</span><span id="discountAmt" style="color:var(--success);">-₹0</span></div>
+        <hr class="fare-divider" />
+        <div class="fare-total"><span>Total</span><span id="fareTotal">₹0</span></div>
+        <div class="coupon-row">
+          <input type="text" id="couponInput" placeholder="Have a coupon?" />
+          <button id="applyCoupon">Apply</button>
+        </div>
+        <button class="pay-btn" id="payBtn"><i class="fas fa-lock"></i> Pay Securely</button>
+        <div class="secure-note"><i class="fas fa-shield-alt"></i> 100% Secure Payments</div>
+        <div style="display:flex;gap:12px;justify-content:center;margin-top:16px;flex-wrap:wrap;">
+          <img src="https://img.icons8.com/color/40/visa.png" alt="Visa" style="height:24px;opacity:0.7;" />
+          <img src="https://img.icons8.com/color/40/mastercard.png" alt="MC" style="height:24px;opacity:0.7;" />
+          <img src="https://img.icons8.com/color/40/upi.png" alt="UPI" style="height:24px;opacity:0.7;" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Success Modal -->
+<div class="success-modal" id="successModal">
+  <div class="success-box">
+    <div class="success-icon"><i class="fas fa-check"></i></div>
+    <h2>Booking Confirmed! 🎉</h2>
+    <p>Your ticket has been booked successfully. Details have been sent to your email and mobile.</p>
+    <div class="booking-ref"><span>Booking Reference</span><strong id="bookingRef"></strong></div>
+    <button class="success-btn" onclick="window.location.href='my-bookings.html'">View My Bookings</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script>
+  const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:3001/api' : '/api';
+
+  // Auth state for navbar
+  (function() {
+    const user = JSON.parse(localStorage.getItem('zygobus_user') || 'null');
+    if (user) {
+      const loginBtn = document.getElementById('loginBtn');
+      const signupBtn = document.getElementById('signupBtn');
+      const navActions = document.getElementById('navActions');
+      if (loginBtn) loginBtn.style.display = 'none';
+      if (signupBtn) signupBtn.style.display = 'none';
+      const greeting = document.createElement('span');
+      greeting.style.cssText = 'color:#fff;font-weight:600;font-size:0.9rem;display:flex;align-items:center;gap:8px;';
+      greeting.innerHTML = `<i class="fas fa-user-circle" style="color:var(--primary);font-size:1.1rem;"></i>${user.firstName}`;
+      const logoutBtn = document.createElement('button');
+      logoutBtn.textContent = 'Logout';
+      logoutBtn.className = 'btn-ghost';
+      logoutBtn.style.cssText = 'cursor:pointer;border:none;background:none;';
+      logoutBtn.addEventListener('click', () => {
+        localStorage.removeItem('zygobus_token');
+        localStorage.removeItem('zygobus_user');
+        window.location.href = '../index.html';
+      });
+      const hamburger = document.querySelector('.hamburger');
+      navActions.insertBefore(logoutBtn, hamburger);
+      navActions.insertBefore(greeting, logoutBtn);
+    }
+  })();
+
+  // Hamburger
+  document.getElementById('hamburger')?.addEventListener('click', () => {
+    document.getElementById('navLinks').classList.toggle('open');
+  });
+
+
+  const p = new URLSearchParams(window.location.search);
+  document.getElementById('bkFrom').textContent     = p.get('from')      || '-';
+  document.getElementById('bkTo').textContent       = p.get('to')        || '-';
+  document.getElementById('bkDate').textContent     = p.get('date')      || '-';
+  document.getElementById('bkOperator').textContent = p.get('operator')  || '-';
+  document.getElementById('bkBusType').textContent  = p.get('busType')   || '-';
+  document.getElementById('bkDep').textContent      = p.get('departure') || '-';
+  document.getElementById('bkArr').textContent      = p.get('arrival')   || '-';
+  document.getElementById('bkDuration').textContent = p.get('duration')  || '-';
+  // Show seat labels (e.g. "1A, 2B") or fall back to count
+  const seatIds = p.get('seatIds');
+  const seatCount = parseInt(p.get('seats')) || 1;
+  document.getElementById('bkSeats').textContent = seatIds
+    ? `${seatCount} seat${seatCount > 1 ? 's' : ''} (${seatIds})`
+    : `${seatCount} seat${seatCount > 1 ? 's' : ''}`;
+
+  const fare = parseInt(p.get('fare')) || 0;
+  document.getElementById('fareBase').textContent = `₹${fare}`;
+  let discount = 0;
+
+  function updateTotal() {
+    document.getElementById('fareTotal').textContent = `₹${fare + 49 - discount}`;
+  }
+  updateTotal();
+
+  // Pre-fill form if user is logged in
+  const loggedUser = JSON.parse(localStorage.getItem('zygobus_user') || 'null');
+  if (loggedUser) {
+    document.getElementById('firstName').value = loggedUser.firstName || '';
+    document.getElementById('lastName').value  = loggedUser.lastName  || '';
+    document.getElementById('email').value     = loggedUser.email     || '';
+    document.getElementById('mobile').value    = loggedUser.mobile    || '';
+  }
+
+  // Coupon
+  document.getElementById('applyCoupon').addEventListener('click', () => {
+    const code = document.getElementById('couponInput').value.trim().toUpperCase();
+    const codes = { 'ZYGO200': 200, 'WKND15': Math.floor(fare * 0.15), 'STUDENT20': Math.floor(fare * 0.2),
+                    'NIGHT50': 50, 'SUMMER25': Math.min(Math.floor(fare * 0.25), 300), 'REFER100': 100 };
+    if (codes[code] !== undefined) {
+      discount = Math.min(codes[code], fare);
+      document.getElementById('discountRow').style.display = 'flex';
+      document.getElementById('discountAmt').textContent = `-₹${discount}`;
+      updateTotal();
+      showToast(`✅ Coupon applied! You save ₹${discount}`, 'success');
+    } else {
+      showToast('Invalid coupon code', 'error');
+    }
+  });
+
+  // Pay button
+  document.getElementById('payBtn').addEventListener('click', async () => {
+    const fields = [
+      ['firstName','First Name'], ['lastName','Last Name'],
+      ['mobile','Mobile'],        ['email','Email'],
+      ['age','Age'],              ['gender','Gender']
+    ];
+    for (const [id, label] of fields) {
+      if (!document.getElementById(id).value.trim()) {
+        showToast(`Please enter ${label}`, 'error'); return;
+      }
+    }
+
+    const btn = document.getElementById('payBtn');
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+    btn.disabled = true;
+
+    const totalFare = fare + 49 - discount;
+    const bookingData = {
+      fromCity:        p.get('from')      || '',
+      toCity:          p.get('to')        || '',
+      travelDate:      p.get('date')      || '',
+      operator:        p.get('operator')  || '',
+      departure:       p.get('departure') || '',
+      arrival:         p.get('arrival')   || '',
+      duration:        p.get('duration')  || '',
+      busType:         p.get('busType')   || '',
+      seats:           seatCount,
+      totalFare,
+      passengerName:   `${document.getElementById('firstName').value} ${document.getElementById('lastName').value}`.trim(),
+      passengerEmail:  document.getElementById('email').value.trim(),
+      passengerMobile: document.getElementById('mobile').value.trim()
+    };
+
+    let bookingRef = 'ZYG' + Date.now().toString().slice(-8);
+
+    // Try to save to backend
+    const token = localStorage.getItem('zygobus_token');
+    if (token) {
+      try {
+        const res = await fetch(`${API}/bookings`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify(bookingData)
+        });
+        if (res.ok) {
+          const data = await res.json();
+          bookingRef = data.bookingRef;
+        }
+      } catch {
+        // Server offline – fall through to localStorage fallback
+      }
+    }
+
+    // Always save to localStorage as fallback / offline copy
+    const saved = JSON.parse(localStorage.getItem('zygobus_bookings') || '[]');
+    saved.unshift({ ...bookingData, bookingRef, status: 'confirmed', createdAt: new Date().toISOString() });
+    localStorage.setItem('zygobus_bookings', JSON.stringify(saved));
+
+    btn.innerHTML = '<i class="fas fa-lock"></i> Pay Securely';
+    btn.disabled = false;
+
+    document.getElementById('bookingRef').textContent = bookingRef;
+    document.getElementById('successModal').classList.add('open');
+  });
+
+  function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = `toast show ${type}`;
+    setTimeout(() => t.className = 'toast', 3000);
+  }
+</script>
+</body>
+</html>
