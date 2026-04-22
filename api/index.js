@@ -152,6 +152,33 @@ async function seedData() {
   console.log('Seeded bus/route data');
 }
 
+function genRef() { return 'ZYG' + Date.now().toString().slice(-8); }
+
+// Health check — BEFORE DB middleware so it always responds
+let lastDbError = null;
+app.get('/api/health', async (req, res) => {
+  const info = {
+    status: dbReady ? 'ok' : 'db_pending',
+    service: 'ZygoBus API (Vercel+Neon)',
+    time: new Date().toISOString(),
+    hasDbUrl: !!process.env.DATABASE_URL,
+    dbHost: dbUrl ? new URL(dbUrl).hostname : 'none',
+    dbReady,
+  };
+  if (lastDbError) info.lastError = lastDbError;
+  // Try a quick ping if not ready
+  if (!dbReady) {
+    try {
+      await pool.query('SELECT 1');
+      info.ping = 'ok';
+    } catch (e) {
+      info.ping = 'failed';
+      info.pingError = e.message;
+    }
+  }
+  res.json(info);
+});
+
 // ── Auth Middleware ──────────────────────────────────────────
 function authMiddleware(req, res, next) {
   const h = req.headers.authorization;
@@ -160,11 +187,9 @@ function authMiddleware(req, res, next) {
   catch { return res.status(401).json({ error: 'Invalid or expired token' }); }
 }
 
-function genRef() { return 'ZYG' + Date.now().toString().slice(-8); }
-
 app.use(async (req, res, next) => {
   try { await initDB(); next(); }
-  catch (e) { console.error(e); res.status(500).json({ error: 'DB init failed' }); }
+  catch (e) { lastDbError = e.message; console.error(e); res.status(500).json({ error: 'DB init failed', detail: e.message }); }
 });
 
 // ============================================================
@@ -358,10 +383,6 @@ app.put('/api/bookings/:ref/cancel', authMiddleware, async (req, res) => {
   }
   return res.json({ message: 'Booking cancelled. Refund in 3–5 business days.' });
 });
-
-app.get('/api/health', (req, res) =>
-  res.json({ status: 'ok', service: 'ZygoBus API (Vercel+Neon)', time: new Date().toISOString() })
-);
 
 app.use('/api/*', (req, res) => res.status(404).json({ error: 'Not found' }));
 
