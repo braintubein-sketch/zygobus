@@ -3,6 +3,11 @@
 // Express + PostgreSQL (Neon) + bcryptjs + JWT
 // ============================================================
 
+// Load .env in local dev (no-op in Vercel production)
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config({ path: require('path').join(__dirname, '..', '.env') });
+}
+
 const express = require('express');
 const cors    = require('cors');
 const bcrypt  = require('bcryptjs');
