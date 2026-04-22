@@ -136,6 +136,9 @@
 .amenity i { color: var(--success); }
 .bus-actions { display: flex; gap: 10px; align-items: center; }
 .seats-left { font-size: 0.8rem; font-weight: 600; color: var(--orange); }
+.seats-left.low-seats { color: var(--danger); animation: pulse 1.5s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.6; } }
+.btn-select-seat:disabled { background: rgba(255,255,255,0.1); cursor: not-allowed; transform: none; box-shadow: none; color: var(--text-muted); }
 .btn-select-seat {
   background: linear-gradient(135deg, var(--primary), #3b82f6);
   border: none; border-radius: var(--radius-sm); padding: 10px 22px;

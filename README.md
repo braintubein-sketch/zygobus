@@ -1,106 +1,94 @@
-# 🚌 ZygoBus – Online Bus Ticket Booking Platform
+# 🚌 ZygoBus – Real-Time Bus Ticket Booking Platform
 
-A modern, full-stack bus ticket booking platform built with vanilla HTML/CSS/JavaScript and a Node.js backend.
+A full-stack bus ticket booking platform with **real-time seat availability**, live booking, and instant seat locking.
+
+🌐 **Live:** https://zygobus.vercel.app
 
 ## ✨ Features
 
-- 🔍 **Bus Search** – Search buses between 30+ Indian cities with date selection
-- 💺 **Seat Selection** – Interactive seat map with available, booked, and ladies seats
-- 🎫 **Online Booking** – Full passenger details form with fare summary & coupon codes
-- 👤 **User Auth** – Register/Login with JWT authentication (bcrypt password hashing)
-- 📋 **My Bookings** – View, filter, and cancel your bookings
-- 🏷️ **Offers Page** – Promo codes and discount deals
-- ❓ **Help Center** – FAQ and support contact
-- 🌙 **Dark Mode UI** – Premium glassmorphism design with smooth animations
+- 🔍 **Live Bus Search** – Real buses fetched from DB for any route & date
+- 💺 **Real-Time Seat Map** – See live seat availability; seats lock the moment someone books
+- 🎫 **Online Booking** – Full passenger form with fare summary & coupon codes
+- 👤 **User Auth** – JWT-based register/login with bcrypt password hashing
+- 📋 **My Bookings** – View, filter, and cancel bookings (seats are released on cancel)
+- 🏷️ **Offers & Coupons** – ZYGO200, WKND15, STUDENT20, NIGHT50, SUMMER25, REFER100
+- ❓ **Help Center** – FAQ and support
+- 🌙 **Dark Glassmorphism UI** – Premium design with smooth animations
 
 ## 🛠️ Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | HTML5, CSS3, Vanilla JavaScript |
-| Backend | Node.js, Express.js |
-| Database | SQLite (better-sqlite3) |
-| Auth | JWT + bcryptjs |
-| Fonts | Google Fonts (Inter, Outfit) |
-| Icons | Font Awesome 6 |
+| Layer      | Local Dev                  | Production (Vercel)         |
+|------------|----------------------------|-----------------------------|
+| Frontend   | HTML5, CSS3, Vanilla JS    | Same (static files)         |
+| Backend    | Node.js + Express          | Vercel Serverless Functions |
+| Database   | SQLite (better-sqlite3)    | Neon PostgreSQL             |
+| Auth       | JWT + bcryptjs             | Same                        |
 
-## 🚀 Getting Started
+## 🗄️ Real-Time Data Model
 
-### Prerequisites
-- Node.js (v18+)
-- npm
+```
+buses       → operators, bus types, seat count, amenities, rating
+schedules   → routes (from→to), departure/arrival times, fares
+bookedSeats → live seat locks per schedule + date (updated on every booking/cancel)
+bookings    → full booking records per user
+users       → registered accounts
+```
 
-### Installation & Run
+## 🚀 Local Development
 
 ```bash
-# Clone the repo
 git clone https://github.com/braintubein-sketch/zygobus.git
 cd zygobus
 
-# Install server dependencies
-cd server
+# Install dependencies
+cd server && npm install && cd ..
 npm install
 
-# Start the backend server
-node server.js
+# Start local server (SQLite, auto-seeds 20+ routes)
+cd server && node server.js
 ```
 
-Then open your browser at **http://localhost:3001**
+Open **http://localhost:3001**
 
-## 📁 Project Structure
+## ☁️ Production Deployment (Vercel + Neon)
 
+```bash
+# Set environment variables in Vercel dashboard:
+DATABASE_URL=postgresql://...   # Neon connection string
+JWT_SECRET=your-secret-key
+
+# Push to GitHub → Vercel auto-deploys
+git push origin main
 ```
-zygobus/
-├── index.html              # Homepage
-├── css/
-│   ├── style.css           # Main stylesheet
-│   ├── auth.css            # Auth pages styles
-│   └── search.css          # Search results styles
-├── js/
-│   ├── main.js             # Homepage logic
-│   └── search.js           # Bus search & seat selection
-├── pages/
-│   ├── login.html
-│   ├── register.html
-│   ├── search-results.html
-│   ├── booking.html
-│   ├── my-bookings.html
-│   ├── offers.html
-│   └── help.html
-├── assets/
-│   └── images/
-├── server/
-│   ├── server.js           # Express + SQLite backend
-│   └── package.json
-└── .gitignore
-```
-
-## 🎟️ Coupon Codes
-
-| Code | Discount |
-|------|---------|
-| `ZYGO200` | ₹200 off |
-| `WKND15` | 15% off (weekend) |
-| `STUDENT20` | 20% off |
-| `NIGHT50` | ₹50 off |
-| `SUMMER25` | 25% off (max ₹300) |
-| `REFER100` | ₹100 off |
 
 ## 📡 API Endpoints
 
-| Method | Endpoint | Description |
-|--------|---------|-------------|
-| POST | `/api/auth/register` | Register new user |
-| POST | `/api/auth/login` | Login |
-| GET | `/api/auth/me` | Get current user |
-| GET | `/api/bookings` | Get user's bookings |
-| POST | `/api/bookings` | Create booking |
-| PUT | `/api/bookings/:ref/cancel` | Cancel booking |
-| GET | `/api/health` | Health check |
+| Method | Endpoint                      | Description                    |
+|--------|-------------------------------|--------------------------------|
+| GET    | `/api/search?from=X&to=Y&date=Z` | Live bus search with seat counts |
+| GET    | `/api/seats?scheduleId=X&date=Y` | Real-time seat map              |
+| POST   | `/api/auth/register`          | Register                       |
+| POST   | `/api/auth/login`             | Login                          |
+| GET    | `/api/auth/me`                | Current user                   |
+| GET    | `/api/bookings`               | User's bookings                |
+| POST   | `/api/bookings`               | Create booking + lock seats    |
+| PUT    | `/api/bookings/:ref/cancel`   | Cancel + release seats         |
+| GET    | `/api/health`                 | Health check                   |
 
-## 📄 License
+## 🎟️ Coupon Codes
 
-MIT License — feel free to use and modify.
+| Code        | Discount               |
+|-------------|------------------------|
+| `ZYGO200`   | ₹200 off               |
+| `WKND15`    | 15% off                |
+| `STUDENT20` | 20% off                |
+| `NIGHT50`   | ₹50 off                |
+| `SUMMER25`  | 25% off (max ₹300)     |
+| `REFER100`  | ₹100 off               |
+
+## 🛣️ Available Routes (20+ pre-seeded)
+
+Bangalore ↔ Hyderabad · Mumbai ↔ Pune · Chennai ↔ Bangalore · Delhi ↔ Agra · Hyderabad ↔ Vijayawada · Kochi ↔ Coimbatore · Jaipur ↔ Delhi · Bangalore ↔ Goa · Mumbai → Goa · Chennai ↔ Madurai · Bangalore ↔ Mysore · Pune → Goa
 
 ---
 
