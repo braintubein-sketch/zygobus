@@ -19,81 +19,56 @@ const JWT_SECRET = process.env.JWT_SECRET || 'zygobus-super-secret-key-2026';
 app.use(cors({ origin: '*' }));
 app.use(express.json());
 
+// Strip channel_binding from Neon URLs (pg client doesn't support it)
+const dbUrl = (process.env.DATABASE_URL || '').replace(/&channel_binding=[^&]*/gi, '');
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: dbUrl,
   ssl: { rejectUnauthorized: false }
 });
 
-// ── Init Tables ─────────────────────────────────────────────
+// ── Init Tables (individual queries for Neon compatibility) ──
 let dbReady = false;
 async function initDB() {
   if (dbReady) return;
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS users (
-      id          SERIAL PRIMARY KEY,
-      "firstName" TEXT NOT NULL,
-      "lastName"  TEXT NOT NULL,
-      email       TEXT UNIQUE NOT NULL,
-      mobile      TEXT NOT NULL,
-      password    TEXT NOT NULL,
+  try {
+    await pool.query(`CREATE TABLE IF NOT EXISTS users (
+      id SERIAL PRIMARY KEY, "firstName" TEXT NOT NULL, "lastName" TEXT NOT NULL,
+      email TEXT UNIQUE NOT NULL, mobile TEXT NOT NULL, password TEXT NOT NULL,
       "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
-
-    CREATE TABLE IF NOT EXISTS buses (
-      id           SERIAL PRIMARY KEY,
-      operator     TEXT NOT NULL,
-      "busType"    TEXT NOT NULL,
-      "totalSeats" INTEGER DEFAULT 40,
-      amenities    TEXT DEFAULT '[]',
-      rating       REAL DEFAULT 4.0,
-      "ratingCount" INTEGER DEFAULT 200
-    );
-
-    CREATE TABLE IF NOT EXISTS schedules (
-      id         SERIAL PRIMARY KEY,
-      "busId"    INTEGER NOT NULL,
-      "fromCity" TEXT NOT NULL,
-      "toCity"   TEXT NOT NULL,
-      departure  TEXT NOT NULL,
-      arrival    TEXT NOT NULL,
-      duration   TEXT NOT NULL,
-      "baseFare" INTEGER NOT NULL
-    );
-
-    CREATE TABLE IF NOT EXISTS "bookedSeats" (
-      id           SERIAL PRIMARY KEY,
-      "scheduleId" INTEGER NOT NULL,
-      "travelDate" TEXT NOT NULL,
-      "seatNumber" TEXT NOT NULL,
+    )`);
+    await pool.query(`CREATE TABLE IF NOT EXISTS buses (
+      id SERIAL PRIMARY KEY, operator TEXT NOT NULL, "busType" TEXT NOT NULL,
+      "totalSeats" INTEGER DEFAULT 40, amenities TEXT DEFAULT '[]',
+      rating REAL DEFAULT 4.0, "ratingCount" INTEGER DEFAULT 200
+    )`);
+    await pool.query(`CREATE TABLE IF NOT EXISTS schedules (
+      id SERIAL PRIMARY KEY, "busId" INTEGER NOT NULL,
+      "fromCity" TEXT NOT NULL, "toCity" TEXT NOT NULL,
+      departure TEXT NOT NULL, arrival TEXT NOT NULL,
+      duration TEXT NOT NULL, "baseFare" INTEGER NOT NULL
+    )`);
+    await pool.query(`CREATE TABLE IF NOT EXISTS "bookedSeats" (
+      id SERIAL PRIMARY KEY, "scheduleId" INTEGER NOT NULL,
+      "travelDate" TEXT NOT NULL, "seatNumber" TEXT NOT NULL,
       "bookingRef" TEXT,
       UNIQUE("scheduleId", "travelDate", "seatNumber")
-    );
-
-    CREATE TABLE IF NOT EXISTS bookings (
-      id                SERIAL PRIMARY KEY,
-      "userId"          INTEGER NOT NULL,
-      "bookingRef"      TEXT UNIQUE NOT NULL,
-      "scheduleId"      INTEGER,
-      "fromCity"        TEXT NOT NULL,
-      "toCity"          TEXT NOT NULL,
-      "travelDate"      TEXT NOT NULL,
-      operator          TEXT NOT NULL,
-      departure         TEXT,
-      arrival           TEXT,
-      duration          TEXT,
-      "busType"         TEXT,
-      seats             INTEGER NOT NULL DEFAULT 1,
-      "seatIds"         TEXT,
-      "totalFare"       INTEGER NOT NULL,
-      status            TEXT DEFAULT 'confirmed',
-      "passengerName"   TEXT,
-      "passengerEmail"  TEXT,
-      "passengerMobile" TEXT,
-      "createdAt"       TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
-  `);
-  dbReady = true;
-  await seedData();
+    )`);
+    await pool.query(`CREATE TABLE IF NOT EXISTS bookings (
+      id SERIAL PRIMARY KEY, "userId" INTEGER NOT NULL,
+      "bookingRef" TEXT UNIQUE NOT NULL, "scheduleId" INTEGER,
+      "fromCity" TEXT NOT NULL, "toCity" TEXT NOT NULL, "travelDate" TEXT NOT NULL,
+      operator TEXT NOT NULL, departure TEXT, arrival TEXT, duration TEXT,
+      "busType" TEXT, seats INTEGER NOT NULL DEFAULT 1, "seatIds" TEXT,
+      "totalFare" INTEGER NOT NULL, status TEXT DEFAULT 'confirmed',
+      "passengerName" TEXT, "passengerEmail" TEXT, "passengerMobile" TEXT,
+      "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`);
+    dbReady = true;
+    await seedData();
+  } catch (e) {
+    console.error('initDB error:', e.message);
+    throw e;
+  }
 }
 
 // ── Seed Data ────────────────────────────────────────────────
